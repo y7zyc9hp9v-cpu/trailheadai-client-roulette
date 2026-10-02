@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trailheadai — Fake Client Roulette</title>
+  <meta name="description" content="A Trailheadai practice toy for spinning up pretend Wisconsin small-business sample sites.">
+  <style>
+    :root {
+      --ink: #09090b;
+      --cream: #e8e0d4;
+      --muted: #aaa092;
+      --line: rgba(232,224,212,.16);
+      --panel: #131316;
+      --panel-2: #1a1918;
+      --accent: #d6a85a;
+      --accent-ink: #21180d;
+      --good: #9dbd8b;
+      --shadow: 0 26px 80px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--ink); color: var(--cream); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { margin: 0; min-height: 100vh; background: radial-gradient(circle at 80% 0%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 35rem), var(--ink); }
+    button { font: inherit; }
+    .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+    .topbar { padding: 22px 0 12px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .brand { display:flex; gap: 10px; align-items:center; color: var(--cream); font-weight: 800; letter-spacing: -.03em; }
+    .brand-mark { width: 30px; height: 30px; border: 1px solid var(--accent); display:grid; place-items:center; color: var(--accent); transform: rotate(45deg); }
+    .brand-mark span { transform: rotate(-45deg); font-size: 14px; }
+    .tiny { color: var(--muted); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; }
+    .badge { border: 1px solid var(--accent); color: var(--accent); padding: 7px 10px; font-size: .68rem; letter-spacing: .16em; font-weight: 800; }
+    .hero { padding: 68px 0 35px; display:grid; grid-template-columns: 1fr .8fr; gap: 40px; align-items:end; }
+    .eyebrow { color: var(--accent); font-size: .75rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; margin: 0 0 14px; }
+    h1 { font-size: clamp(2.7rem, 8vw, 6.8rem); line-height: .88; letter-spacing: -.09em; margin: 0; max-width: 760px; }
+    .hero-copy { color: var(--muted); max-width: 400px; line-height: 1.6; font-size: 1rem; margin: 0 0 2px auto; }
+    .controls { display:flex; flex-wrap: wrap; align-items:center; gap: 14px; padding: 19px 0 26px; border-top: 1px solid var(--line); }
+    .spin { border: 0; cursor: pointer; color: var(--accent-ink); background: var(--accent); padding: 15px 21px; font-weight: 900; letter-spacing: .02em; box-shadow: 6px 6px 0 rgba(232,224,212,.12); transition: transform .15s ease, box-shadow .15s ease; }
+    .spin:hover { transform: translate(-2px,-2px); box-shadow: 9px 9px 0 rgba(232,224,212,.12); }
+    .spin:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 rgba(232,224,212,.12); }
+    .spin:focus-visible { outline: 3px solid var(--cream); outline-offset: 4px; }
+    .count { color: var(--muted); font-size: .82rem; }
+    .sample { border: 1px solid var(--line); background: var(--panel); box-shadow: var(--shadow); overflow:hidden; }
+    .sample-head { padding: 15px 18px; border-bottom: 1px solid var(--line); display:flex; justify-content:space-between; gap: 16px; align-items:center; }
+    .sample-label { color: var(--accent); font-size: .68rem; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+    .sample-id { color: #736c63; font-size: .72rem; }
+    .business { padding: clamp(27px, 6vw, 65px); position:relative; isolation:isolate; overflow:hidden; }
+    .business::before { content:""; position:absolute; width: 360px; height: 360px; right:-130px; top:-130px; border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 50%; z-index:-1; }
+    .business::after { content:""; position:absolute; width: 200px; height: 200px; right:-45px; top:-45px; border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent); border-radius: 50%; z-index:-1; }
+    .location { color: var(--accent); text-transform:uppercase; letter-spacing:.16em; font-size:.7rem; font-weight:800; margin:0 0 16px; }
+    h2 { font-size: clamp(2.15rem, 6vw, 5.5rem); line-height: .9; letter-spacing: -.08em; margin:0; max-width:850px; }
+    .tagline { color: var(--cream); max-width: 540px; font-size: clamp(1.05rem,2vw,1.35rem); line-height:1.4; margin: 23px 0 31px; }
+    .services { display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .service { background: var(--panel-2); border:1px solid var(--line); padding: 19px; min-height: 122px; }
+    .service-num { color: var(--accent); font-size:.68rem; font-weight:900; }
+    .service strong { display:block; font-size: 1.02rem; margin: 17px 0 7px; }
+    .service p { margin:0; color:var(--muted); font-size:.82rem; line-height:1.45; }
+    .contact { display:flex; justify-content:space-between; align-items:center; gap: 20px; flex-wrap:wrap; padding-top: 27px; margin-top: 27px; border-top:1px solid var(--line); }
+    .contact-copy { color:var(--muted); font-size:.82rem; line-height:1.5; }
+    .contact-copy b { color:var(--cream); font-weight:700; }
+    .demo-link { display:inline-block; color:var(--accent); border-bottom:1px solid var(--accent); padding-bottom:3px; text-decoration:none; font-size:.8rem; font-weight:800; }
+    .foot { padding: 28px 0 42px; display:flex; justify-content:space-between; gap: 15px; color:#746d65; font-size:.72rem; line-height:1.5; }
+    .foot span:last-child { text-align:right; }
+    @media (max-width: 720px) {
+      .topbar { align-items:flex-start; }
+      .hero { grid-template-columns:1fr; gap:25px; padding-top:48px; }
+      .hero-copy { margin:0; }
+      .services { grid-template-columns:1fr; }
+      .service { min-height: auto; }
+      .contact { align-items:flex-start; flex-direction:column; }
+      .foot { flex-direction:column; }
+      .foot span:last-child { text-align:left; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition:none !important; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark" aria-hidden="true"><span>✦</span></div><span>trailheadai</span></div>
+      <div class="badge">SAMPLE DEMO · DEMO ONLY</div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Side quest / 004</p>
+          <h1 id="page-title">Fake client<br>roulette.</h1>
+        </div>
+        <p class="hero-copy">Spin up a made-up Wisconsin small business, then see the shape of a simple Trailheadai sample site. Practice ideas without touching a real client.</p>
+      </section>
+
+      <section class="controls" aria-label="Roulette controls">
+        <button class="spin" id="spin" type="button">Spin a client ↗</button>
+        <button class="spin" id="spinAgain" type="button" hidden>Spin again ↗</button>
+        <span class="count" id="count" aria-live="polite">10 pretend businesses in the hat</span>
+      </section>
+
+      <section class="sample" aria-live="polite" aria-label="Pretend business sample">
+        <div class="sample-head">
+          <span class="sample-label">SAMPLE SITE / NOT REAL</span>
+          <span class="sample-id" id="sampleId">Ready when you are</span>
+        </div>
+        <article class="business">
+          <p class="location" id="location">Wisconsin, USA · pretend client</p>
+          <h2 id="businessName">Your next pretend client is waiting.</h2>
+          <p class="tagline" id="tagline">Hit the button to see a made-up local business and its first-draft direction.</p>
+          <div class="services" id="services"></div>
+          <div class="contact">
+            <div class="contact-copy"><b id="contactName">DEMO CONTACT ONLY</b><br><span id="contactLine">No real calls or emails — this is a practice page.</span></div>
+            <a class="demo-link" href="#demo" id="demoLink">VIEW DEMO PATH ↗</a>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span>Built for practice. Every business, name, number, and inbox is fictional.</span>
+      <span>SAMPLE DEMO · OFFLINE · NO PAYMENTS</span>
+    </footer>
+  </div>
+
+  <script>
+    const businesses = [
+      { name: "Northline Auto & Detail", town: "Eau Claire, WI · garage + detailing", tagline: "Make the daily driver look like it still has somewhere to be.", services: [["Interior reset", "Seats, mats, dash, and the mystery crumbs."], ["Paint refresh", "A clean, bright finish for weekend miles."], ["Winter prep", "Salt-season protection before the roads turn white."]], contact: "DEMO PHONE: (555) 010-0184", accent: "#d6a85a" },
+      { name: "Copper Creek Plumbing", town: "La Crosse, WI · pipes + repairs", tagline: "Straight answers for the stuff behind the wall.", services: [["Leak finding", "Track down the drip before it becomes a story."], ["Fixture swaps", "Faucets, toilets, and the little upgrades."], ["Old-house fixes", "Practical help for homes with character."],], contact: "DEMO PHONE: (555) 010-0247", accent: "#c78563" },
+      { name: "Muddy Hook Bait Co.", town: "Tomahawk, WI · bait + tackle", tagline: "Early mornings, good coffee, and one more cast.", services: [["Live bait", "A made-up fresh-stock board for the first stop."], ["Tackle basics", "Simple picks for the lake you actually fish."], ["Local tips", "Friendly direction, never a secret spot pin."],], contact: "DEMO PHONE: (555) 010-0312", accent: "#91aa78" },
+      { name: "Pine & Plow Lawn Care", town: "Wausau, WI · lawns + cleanup", tagline: "A yard that looks ready for the long way home.", services: [["Weekly mowing", "Clean edges and an easy-to-live-with schedule."], ["Spring cleanup", "Branches, leaves, and winter's leftovers gone."], ["Mulch + beds", "A little shape around the things worth growing."],], contact: "DEMO PHONE: (555) 010-0466", accent: "#a7a35e" },
+      { name: "Juniper Chair Studio", town: "Madison, WI · independent salon", tagline: "Good hair, relaxed chair, no rush out the door.", services: [["Cuts + shape", "A plan that works on Tuesday morning too."], ["Color refresh", "Natural, bright, or somewhere in between."], ["Event styling", "A polished finish for the day on your calendar."],], contact: "DEMO PHONE: (555) 010-0529", accent: "#bd86a3" },
+      { name: "Sunday Flour Bakehouse", town: "Green Bay, WI · bread + pastries", tagline: "Small-batch comfort for the table and the drive home.", services: [["Morning bake", "A pretend case for arriving before the good stuff goes."], ["Celebration cakes", "Simple layers, big reason to gather."], ["Bread boxes", "A rotating loaf plan for the week ahead."],], contact: "DEMO PHONE: (555) 010-0675", accent: "#cc9b67" },
+      { name: "Clearview Auto Glass", town: "Appleton, WI · mobile glass service", tagline: "See the road clearly again, without making a whole day of it.", services: [["Chip repair", "Tiny mark, quick attention, less spreading."], ["Windshield swap", "A clean fit for the next mile."], ["Mobile service", "A pretend route that comes to your driveway."],], contact: "DEMO PHONE: (555) 010-0731", accent: "#83aeb5" },
+      { name: "Badger Snow & Salt", town: "Racine, WI · winter driveways", tagline: "When the lake-effect shows up, the shovel plan is ready.", services: [["Driveway clearing", "A clear path from door to road."], ["Walkway care", "Steps and sidewalks treated with attention."], ["Storm route", "A simple plan for the next heavy one."],], contact: "DEMO PHONE: (555) 010-0888", accent: "#a1b1be" },
+      { name: "Paws on the Porch", town: "Stevens Point, WI · pet grooming", tagline: "Less fuss for them. More clean-towel energy for home.", services: [["Bath + brush", "A fresh start for muddy-paw season."], ["Full groom", "A tidy, comfortable reset from nose to tail."], ["Puppy visits", "Short, calm introductions to the routine."],], contact: "DEMO PHONE: (555) 010-0942", accent: "#c69a75" },
+      { name: "Lakewind Heating & Air", town: "Oshkosh, WI · HVAC service", tagline: "Comfort that does its job quietly, all year long.", services: [["Tune-ups", "A seasonal once-over before the weather changes."], ["No-heat calls", "A pretend fast lane for cold mornings."], ["Filter plans", "Small maintenance that keeps the system moving."],], contact: "DEMO PHONE: (555) 010-0107", accent: "#c67858" }
+    ];
+
+    const $ = (id) => document.getElementById(id);
+    let lastIndex = -1;
+    let spins = 0;
+    function choose() {
+      let index;
+      do { index = Math.floor(Math.random() * businesses.length); } while (businesses.length > 1 && index === lastIndex);
+      lastIndex = index;
+      return businesses[index];
+    }
+    function render() {
+      const business = choose();
+      spins++;
+      document.documentElement.style.setProperty('--accent', business.accent);
+      $("location").textContent = business.town;
+      $("businessName").textContent = business.name;
+      $("tagline").textContent = business.tagline;
+      $("contactName").textContent = "DEMO CONTACT ONLY";
+      $("contactLine").textContent = business.contact + " · fictional placeholder";
+      $("sampleId").textContent = `Spin ${String(spins).padStart(2, "0")} · practice draft`;
+      $("count").textContent = `${businesses.length} pretend businesses in the hat · last spin: ${business.name}`;
+      $("services").innerHTML = business.services.map((service, i) => `<div class="service"><span class="service-num">0${i + 1}</span><strong>${service[0]}</strong><p>${service[1]}</p></div>`).join("");
+      $("spin").hidden = true;
+      $("spinAgain").hidden = false;
+    }
+    $("spin").addEventListener("click", render);
+    $("spinAgain").addEventListener("click", render);
+  </script>
+</body>
+</html>
